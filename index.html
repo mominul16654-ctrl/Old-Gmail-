@@ -1,0 +1,120 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gmail Data Entry</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial;background:#f1f5f9;color:#172033}
+header{background:#101c32;color:white;text-align:center;padding:25px}
+header h1{margin:0}
+.container{max-width:700px;margin:25px auto;padding:15px}
+.card{background:white;padding:20px;margin-bottom:18px;border-radius:14px;box-shadow:0 3px 12px #0001}
+input{width:100%;padding:13px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:15px}
+button{width:100%;padding:13px;background:#2563eb;color:white;border:0;border-radius:8px;font-weight:bold;margin-top:7px}
+.stats{display:flex;gap:12px}
+.stat{flex:1;background:#eaf1ff;padding:15px;border-radius:10px}
+.result{padding:12px;border:1px solid #ddd;border-radius:8px;margin-top:10px;overflow-wrap:anywhere}
+footer{text-align:center;padding:20px;color:#64748b}
+</style>
+</head>
+<body>
+
+<header>
+<h1>✉ Gmail Data Entry</h1>
+<p>Search Authorized Demo Records</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Search Gmail Records</h2>
+<input id="search" placeholder="Enter Gmail or Serial Number">
+<button onclick="searchData()">Search Now</button>
+<p>Try: demo01@example.com or 1001</p>
+</div>
+
+<div class="stats">
+<div class="stat">
+Total Records
+<h2 id="total">5</h2>
+</div>
+<div class="stat">
+Status
+<h3 id="status">Ready</h3>
+</div>
+</div>
+
+<div class="card">
+<h2>Search Results</h2>
+<div id="results">Search a record to see results.</div>
+</div>
+
+<div class="card">
+<h2>Admin Demo - Add Record</h2>
+<input id="email" placeholder="Demo Email Address">
+<input id="serial" placeholder="Serial Number">
+<button onclick="addData()">Add Record</button>
+<p id="message"></p>
+</div>
+
+</div>
+
+<footer>Gmail Data Entry | Demo Website</footer>
+
+<script>
+let records=[
+{serial:"1001",email:"demo01@example.com"},
+{serial:"1002",email:"demo02@example.com"},
+{serial:"1003",email:"demo03@example.com"},
+{serial:"1004",email:"demo04@example.com"},
+{serial:"1005",email:"demo05@example.com"}
+];
+
+function searchData(){
+let q=document.getElementById("search").value.trim().toLowerCase();
+let found=records.filter(r=>r.email.toLowerCase()===q||r.serial===q);
+let box=document.getElementById("results");
+document.getElementById("status").textContent=found.length?"Found":"Not Found";
+box.innerHTML="";
+if(!q){box.textContent="Enter a search term";return;}
+if(!found.length){box.textContent="No record found";return;}
+found.forEach(r=>{
+let div=document.createElement("div");
+div.className="result";
+let a=document.createElement("p");
+a.textContent="Serial: "+r.serial;
+let b=document.createElement("p");
+b.textContent="Email: "+r.email;
+div.append(a,b);
+box.append(div);
+});
+}
+
+function addData(){
+let email=document.getElementById("email").value.trim();
+let serial=document.getElementById("serial").value.trim();
+let msg=document.getElementById("message");
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||!serial){
+msg.textContent="Enter valid email and serial";
+return;
+}
+if(records.some(r=>r.serial===serial||r.email.toLowerCase()===email.toLowerCase())){
+msg.textContent="Duplicate record";
+return;
+}
+records.push({serial,email});
+document.getElementById("total").textContent=records.length;
+document.getElementById("email").value="";
+document.getElementById("serial").value="";
+msg.textContent="Record added successfully!";
+}
+document.getElementById("search").addEventListener("keydown",e=>{
+if(e.key==="Enter")searchData();
+});
+</script>
+
+</body>
+</html>
